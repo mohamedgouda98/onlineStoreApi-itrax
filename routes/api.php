@@ -27,5 +27,8 @@ Route::get('products', [ProductsController::class, 'products']);
 Route::group(['prefix' => 'cart', 'middleware' => 'jwtAuth'], function(){
     Route::get('user', [CartController::class, 'userCart']);
     Route::post('add', [CartController::class, 'addToCart']);
+    Route::post('deleteFromCart', [CartController::class, 'deleteFromCart']);
+    Route::post('updateCart', [CartController::class, 'updateCart']);
+    Route::post('deleteCart', [CartController::class, 'deleteCart']);
+    Route::get('getAllCarts', [CartController::class, 'getAllCarts']);
 });
-
