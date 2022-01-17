@@ -2,18 +2,14 @@
 
 namespace App\Rules;
 
-use App\Http\Traits\ApiResponseTrait;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
-class StockValidation implements Rule
+class CartProductCountValidation implements Rule
 {
-    use ApiResponseTrait;
     public $productId;
-    public $message;
     /**
      * Create a new rule instance.
      *
@@ -33,21 +29,18 @@ class StockValidation implements Rule
      */
     public function passes($attribute, $value)
     {
-        $product = Product::where([ ['id', $this->productId], ['stock', '>=', $value] ])->first();
-        if($product)
-        {
-           $validation = Validator::make( [ 'count' => request('count') ] ,[
-                'count' => [new CartProductCountValidation($product->id)]
-            ]);
-
-            if($validation->fails())
+        $cart = Cart::where([ ['user_id', Auth::user()->id], ['product_id', $this->productId] ])->first();
+            if($cart)
             {
-                $this->message = $validation->getMessageBag()->first('count');
+                $product = Product::find($this->productId);
+                if($cart->count + $value <= $product->stock)
+                {
+                    return true;
+                }
                 return false;
             }
+
             return true;
-        }
-        return false;
     }
 
     /**
@@ -57,6 +50,6 @@ class StockValidation implements Rule
      */
     public function message()
     {
-        return $this->message == null ? 'Stock Not found' : $this->message;
+        return 'Over the count of stock';
     }
 }
