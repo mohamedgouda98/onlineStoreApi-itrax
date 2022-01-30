@@ -8,9 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable implements JWTSubject
 {
+    use LaratrustUserTrait;
     use HasApiTokens, HasFactory, Notifiable;
 
     /**

@@ -22,7 +22,13 @@ Route::group(['prefix' => 'auth'], function(){
     Route::post('login', [AuthController::class, 'login']);
 });
 
-Route::get('products', [ProductsController::class, 'products']);
+Route::group(['prefix' => 'products'],function(){
+    Route::get('all', [ProductsController::class, 'products']);
+    Route::post('create', [ProductsController::class, 'create']);
+    Route::post('update', [ProductsController::class, 'update']);
+    Route::post('delete', [ProductsController::class, 'delete']);
+    Route::get('archive', [ProductsController::class, 'archive']);
+});
 
 Route::group(['prefix' => 'cart', 'middleware' => 'jwtAuth'], function(){
     Route::get('user', [CartController::class, 'userCart']);
